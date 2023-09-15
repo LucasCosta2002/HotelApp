@@ -1,0 +1,45 @@
+﻿@page "/"
+@using HotelApp.Client.Components
+
+<PageTitle>Gestion Hotel</PageTitle>
+
+<main class="bg-fondo vh-100 p-3 container overflow-auto ">
+    <div class="container overflow-hidden">
+        <div class="row gap-1 justify-content-between">
+
+            
+            @foreach (var item in habitaciones)
+            {
+                <CardHabitacion />
+            }
+           
+
+        </div>
+    </div>
+</main>
+
+@code {
+    List<Habitaciones> habitaciones;
+    string Mensaje = "";
+    bool Error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await Leer();
+    }
+    private async Task Leer()
+    {
+        var respuesta = await http.Get<List<Habitaciones>>("api/habitacion");
+        Error = respuesta.Error;
+
+        if (!respuesta.Error)
+        {
+            habitaciones = respuesta.Respuesta;
+        }
+        else
+        {
+            Mensaje = await respuesta.ObtenerError();
+        }
+    }
+}
